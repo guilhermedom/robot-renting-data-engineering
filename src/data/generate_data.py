@@ -25,39 +25,49 @@ email_options = ['@gnail.con', '@yay.con', '@liver.con', '@neutron.con', '@outsp
 ### models ###
 model_brand_options = ['Leopard', 'Ferrero', 'Lambeginning', 'Porch', 'Fort', 'Nissun']
 model_name_options = []
-model_name_options.append(['XJR-15', 'XJ220', 'C-X75'])
-model_name_options.append(['SF-90', 'Testarossa', 'F-40'])
-model_name_options.append(['Veneno', 'Countach', 'Aventador'])
-model_name_options.append(['911', 'Panamera', 'Cayenne'])
-model_name_options.append(['GT-40', 'Mustang', 'GT'])
-model_name_options.append(['Skyline', 'R92CP', 'GT-R Nismo'])
+model_name_options.append(['XJR-15', 'XJ220', 'C-X75', 'Fuore XF-10', 'Pirana'])
+model_name_options.append(['SF-90', 'Testarossa', 'F-40', 'F355 Berlinetta', '250 GTO'])
+model_name_options.append(['Veneno', 'Countach', 'Aventador', 'Sian', 'Diablo'])
+model_name_options.append(['911', 'Panamera', 'Cayenne', 'Taycan', '962'])
+model_name_options.append(['GT-40', 'Mustang', 'GT', 'Thunderbird', 'GT90'])
+model_name_options.append(['Skyline', 'R92CP', 'R390', 'ESFLOW', 'ZEOD RC'])
 
-model_brand_indices = np.random.randint(0, 6, 50)
-model_brands = [model_brand_options[i] for i in model_brand_indices]
-model_names = [random.choice(model_name_options[i]) for i in model_brand_indices]
+cpu_options = ['Fallen 7', 'Fallen 9', 'Helium', 'Encore i9', 'Encore i11', 'N1', 'Xenon']
+
+memory_options = ['64 GB', '96 GB', '128 GB', '192 GB', '256 GB']
+
+generation_options = ['1', '2', '3', '4', '5', '6', '7']
+
+while(True):
+    model_brand_indices = np.random.randint(0, 6, 50)
+    model_brands = [model_brand_options[i] for i in model_brand_indices]
+    model_names = [random.choice(model_name_options[i]) for i in model_brand_indices]
+
+    cpus = np.random.choice(cpu_options, 50)
+
+    memories = np.random.choice(memory_options, 50)
+
+    generations = np.random.choice(generation_options, 50)
+
+    models = []
+    for i in range(50):
+        models.append((model_brands[i], model_names[i], cpus[i], memories[i], generations[i]))
+    if len(models) == len(set(models)):
+        break
 
 operating_system_options = ['Doors', 'Minix', 'OrangeOS', 'Andromeda', 'OS/3']
 operating_systems = np.random.choice(operating_system_options, 50)
-
-cpu_options = ['Fallen 7', 'Fallen 9', 'Helium', 'Encore i9', 'Encore i11', 'N1', 'Xenon']
-cpus = np.random.choice(cpu_options, 50)
-
-memory_options = ['64 GB', '96 GB', '128 GB', '256 GB']
-memories = np.random.choice(memory_options, 50)
-
-generation_options = ['1', '2', '3', '4']
-generations = np.random.choice(generation_options, 50)
 
 service_options = ['Cleaner', 'Guard', 'Driver', 'Babysitter', 'Gardener', 'Cook']
 services = np.random.choice(service_options, 50)
 
 file_strings = []
 for i in range(50):
-    file_strings.append("INSERT INTO relational.models(model_brand, model_name, operating_system, "
-                        + "cpu, memory, generation, service_category) VALUES (\'"
-                        + model_brands[i] + "\', \'" + model_names[i] + "\', \'" + operating_systems[i] + "\', \'"
-                        + cpus[i] + "\', \'" + memories[i] + "\', " + generations[i] + ", \'" + services[i] + "\');")
-np.savetxt("2.InsertModels.sql", file_strings, fmt='%s')
+    file_strings.append('INSERT INTO relational.models(model_brand, model_name, operating_system, '
+                        + 'cpu, memory, generation, service_category) VALUES (\''
+                        + model_brands[i] + '\', \'' + model_names[i] + '\', \'' + operating_systems[i] + '\', \''
+                        + cpus[i] + '\', \'' + memories[i] + '\', ' + generations[i] + ', \'' + services[i] + '\');')
+np.savetxt('2.InsertModels.sql', file_strings, fmt='%s')
 
 
 ### robots ###
@@ -69,11 +79,13 @@ while(True):
         register_plates.append(''.join(random.choices(string.ascii_uppercase + string.digits, k=7)))
     if len(register_plates) == len(set(register_plates)):
         break
+    else:
+        register_plates = []
 
 acquisition_dates = []
 for i in range(900):
-    acquisition_dates.append("".join(str(random.choice(date_day)).zfill(2) + "/" + str(random.choice(date_month)).zfill(2)
-                                    + "/" + str(random.choice(acquisition_date_year))))
+    acquisition_dates.append(''.join(str(random.choice(date_day)).zfill(2) + '/' + str(random.choice(date_month)).zfill(2)
+                                    + '/' + str(random.choice(acquisition_date_year))))
 
 daily_rate_options = ['9.90', '14.90', '19.90', '24.90', '29.90', '39.90', '49.90', '59.90', '79.90', '99.90']
 daily_rates = np.random.choice(daily_rate_options, 900)
@@ -83,18 +95,18 @@ robot_statuses = np.random.choice(robot_status_options, 900)
 
 file_strings = []
 for i in range(900):
-    file_strings.append("INSERT INTO relational.robots(model_id, register_plate, acquisition_date, daily_rate, status) VALUES ("
-                        + str(model_ids[i]) + ", \'" + register_plates[i] + "\', \'" + acquisition_dates[i] + "\', "
-                        + daily_rates[i] + ", \'" + robot_statuses[i] + "\');")
-np.savetxt("3.InsertRobots.sql", file_strings, fmt='%s')
+    file_strings.append('INSERT INTO relational.robots(model_id, register_plate, acquisition_date, daily_rate, status) VALUES ('
+                        + str(model_ids[i]) + ', \'' + register_plates[i] + '\', \'' + acquisition_dates[i] + '\', '
+                        + daily_rates[i] + ', \'' + robot_statuses[i] + '\');')
+np.savetxt('3.InsertRobots.sql', file_strings, fmt='%s')
 
 
 ### customers ###
 customer_emails = []
 while(True):
     for i in range(2000):
-        customer_emails.append("".join(random.choice(first_name_options).lower() + "_" + random.choice(last_names_options).lower())
-                    + str(email_number_options[i]) + random.choice(email_options))
+        customer_emails.append(''.join(random.choice(first_name_options).lower() + '_' + random.choice(last_names_options).lower())
+                               + str(email_number_options[i]) + random.choice(email_options))
     if len(customer_emails) == len(set(customer_emails)):
         break
     else:
@@ -102,16 +114,16 @@ while(True):
 
 customer_names = []
 for i in range(2000):
-    curr_customer_name = customer_emails[i].split("_")
-    curr_customer_last_name = curr_customer_name[1].split("@")
-    curr_customer_last_name = curr_customer_last_name[0].rstrip("0123456789")
+    curr_customer_name = customer_emails[i].split('_')
+    curr_customer_last_name = curr_customer_name[1].split('@')
+    curr_customer_last_name = curr_customer_last_name[0].rstrip('0123456789')
     
-    customer_names.append("".join(curr_customer_name[0].capitalize() + " " + curr_customer_last_name.capitalize()))
+    customer_names.append(''.join(curr_customer_name[0].capitalize() + ' ' + curr_customer_last_name.capitalize()))
 
 dates_of_births = []
 for i in range(2000):
-    dates_of_births.append("".join(str(random.choice(date_day)).zfill(2) + "/" + str(random.choice(date_month)).zfill(2)
-                           + "/" + str(random.choice(birth_date_year))))
+    dates_of_births.append(''.join(str(random.choice(date_day)).zfill(2) + '/' + str(random.choice(date_month)).zfill(2)
+                           + '/' + str(random.choice(birth_date_year))))
 
 sex_options = ['Male', 'Female', 'Not informed']
 sexes = np.random.choice(sex_options, 2000)
@@ -141,32 +153,32 @@ cities = [random.choice(city_options[i]) for i in state_indices]
 road_options = ['Street', 'Avenue', 'Boulevard', 'Road']
 addresses = []
 for i in range(2000):
-    addresses.append("".join(random.choice(road_options) + " " + random.choice(first_name_options)
-                             + " " + random.choice(last_names_options) + " " + str(np.random.randint(100, 10001))))
+    addresses.append(''.join(random.choice(road_options) + ' ' + random.choice(first_name_options)
+                             + ' ' + random.choice(last_names_options) + ' ' + str(np.random.randint(100, 10001))))
 
 dates_of_registrations = []
 for i in range(2000):
-    dates_of_registrations.append("".join(str(random.choice(date_day)).zfill(2) + "/" + str(random.choice(date_month)).zfill(2)
-                                          + "/" + str(random.choice(registration_date_year))))
+    dates_of_registrations.append(''.join(str(random.choice(date_day)).zfill(2) + '/' + str(random.choice(date_month)).zfill(2)
+                                          + '/' + str(random.choice(registration_date_year))))
 
 customer_status_options = ['Active', 'Inactive']
 customer_statuses = np.random.choice(customer_status_options, 2000)
 
 file_strings = []
 for i in range(2000):
-    file_strings.append("INSERT INTO relational.customers(email, name, date_of_birth, sex, phone_number, state_province, city, "
-                        + "address, date_of_registration, status) VALUES (\'"
-                        + customer_emails[i] + "\', \'" + customer_names[i] + "\', \'" + dates_of_births[i] + "\', \'"
-                        + sexes[i] + "\', \'" + phone_numbers[i] + "\', \'" + states[i] + "\', \'" + cities[i] + "\', \'"
-                        + addresses[i] + "\', \'" + dates_of_registrations[i] + "\', \'" + customer_statuses[i] + "\');")
-np.savetxt("4.InsertCustomers.sql", file_strings, fmt='%s')
+    file_strings.append('INSERT INTO relational.customers(email, name, date_of_birth, sex, phone_number, state_province, city, '
+                        + 'address, date_of_registration, status) VALUES (\''
+                        + customer_emails[i] + '\', \'' + customer_names[i] + '\', \'' + dates_of_births[i] + '\', \''
+                        + sexes[i] + '\', \'' + phone_numbers[i] + '\', \'' + states[i] + '\', \'' + cities[i] + '\', \''
+                        + addresses[i] + '\', \'' + dates_of_registrations[i] + '\', \'' + customer_statuses[i] + '\');')
+np.savetxt('4.InsertCustomers.sql', file_strings, fmt='%s')
 
 
 ### salespersons ###
 salesperson_emails = []
 while(True):
     for i in range(2000):
-        salesperson_emails.append("".join(random.choice(first_name_options).lower() + "_" + random.choice(last_names_options).lower())
+        salesperson_emails.append(''.join(random.choice(first_name_options).lower() + '_' + random.choice(last_names_options).lower())
                     + str(email_number_options[i]) + random.choice(email_options))
     if len(salesperson_emails) == len(set(salesperson_emails)):
         break
@@ -175,11 +187,11 @@ while(True):
 
 salesperson_names = []
 for i in range(2000):
-    curr_salesperson_name = salesperson_emails[i].split("_")
-    curr_salesperson_last_name = curr_salesperson_name[1].split("@")
+    curr_salesperson_name = salesperson_emails[i].split('_')
+    curr_salesperson_last_name = curr_salesperson_name[1].split('@')
     curr_salesperson_last_name = curr_salesperson_last_name[0].rstrip('0123456789')
 
-    salesperson_names.append("".join(curr_salesperson_name[0].capitalize() + " " + curr_salesperson_last_name.capitalize()))
+    salesperson_names.append(''.join(curr_salesperson_name[0].capitalize() + ' ' + curr_salesperson_last_name.capitalize()))
 
 branch_options = ['Diamond', 'Sapphire', 'Emerald', 'Ruby', 'Quartz', 'Amethyst', 'Amber']
 branches = np.random.choice(branch_options, 100)
@@ -189,10 +201,10 @@ salesperson_statuses = np.random.choice(salesperson_status_options, 100)
 
 file_strings = []
 for i in range(100):
-    file_strings.append("INSERT INTO relational.salespersons(email, name, branch, status) VALUES (\'"
-                        + salesperson_emails[i] + "\', \'" + salesperson_names[i] + "\', \'"
-                        + branches[i] + "\', \'" + salesperson_statuses[i] + "\');")
-np.savetxt("5.InsertSalespersons.sql", file_strings, fmt='%s')
+    file_strings.append('INSERT INTO relational.salespersons(email, name, branch, status) VALUES (\''
+                        + salesperson_emails[i] + '\', \'' + salesperson_names[i] + '\', \''
+                        + branches[i] + '\', \'' + salesperson_statuses[i] + '\');')
+np.savetxt('5.InsertSalespersons.sql', file_strings, fmt='%s')
 
 
 ### orders ###
@@ -204,12 +216,12 @@ salesperson_ids = np.random.randint(1, 101, 4000)
 
 orders_start_dates = []
 for i in range(4000):
-    orders_start_dates.append("".join(str(random.choice(date_day)).zfill(2) + "/" + str(random.choice(date_month)).zfill(2)
-                                      + "/" + str(random.choice(order_start_date_year))))
+    orders_start_dates.append(''.join(str(random.choice(date_day)).zfill(2) + '/' + str(random.choice(date_month)).zfill(2)
+                                      + '/' + str(random.choice(order_start_date_year))))
 orders_start_dates_datetime = [date(int(x[2]), int(x[1]), int(x[0])) for x in (y.split('/') for y in orders_start_dates)]
 
 orders_end_dates_datetime = [x + timedelta(days=np.random.randint(1, 30)) for x in orders_start_dates_datetime]
-orders_end_dates = [dt.strftime("%d/%m/%Y") for dt in orders_end_dates_datetime]
+orders_end_dates = [dt.strftime('%d/%m/%Y') for dt in orders_end_dates_datetime]
 orders_end_dates_indexes = list(np.random.randint(0, 4000, 500))
 np.array(orders_end_dates)[orders_end_dates_indexes] = 'NULL'
 
@@ -228,10 +240,10 @@ for i in range(4000):
 
 file_strings = []
 for i in range(4000):
-    file_strings.append("INSERT INTO relational.orders(robot_id, customer_id, salesperson_id, order_start_date, "
-                        + "order_end_date, total_price, discount_percentage, discount, discounted_total_price) VALUES ("
-                        + str(robot_ids[i]) + ", " + str(customer_ids[i]) + ", " + str(salesperson_ids[i]) + ", \'"
-                        + orders_start_dates[i] + "\', " + (("\'" + orders_end_dates[i] + "\'") if orders_end_dates[i] != 'NULL' else 'NULL')
-                        + ", " + str(round(total_prices[i], 2)) + ", " + str(round(discount_percentages[i], 2)) + ", "
-                        + str(round(discounts[i], 2)) + ", " + str(round(discounted_total_prices[i], 2)) + ");")
-np.savetxt("6.InsertOrders.sql", file_strings, fmt='%s')
+    file_strings.append('INSERT INTO relational.orders(robot_id, customer_id, salesperson_id, order_start_date, '
+                        + 'order_end_date, total_price, discount_percentage, discount, discounted_total_price) VALUES ('
+                        + str(robot_ids[i]) + ', ' + str(customer_ids[i]) + ', ' + str(salesperson_ids[i]) + ', \''
+                        + orders_start_dates[i] + '\', ' + (('\'' + orders_end_dates[i] + '\'') if orders_end_dates[i] != 'NULL' else 'NULL')
+                        + ', ' + str(round(total_prices[i], 2)) + ', ' + str(round(discount_percentages[i], 2)) + ', '
+                        + str(round(discounts[i], 2)) + ', ' + str(round(discounted_total_prices[i], 2)) + ');')
+np.savetxt('6.InsertOrders.sql', file_strings, fmt='%s')
